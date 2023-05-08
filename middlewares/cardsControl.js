@@ -10,7 +10,7 @@ exports.storage = multer.diskStorage({
       cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname);
+      cb(null, Date.now().replace(/[\/\\:]/g, "-") + file.originalname);
     }
   });
   
