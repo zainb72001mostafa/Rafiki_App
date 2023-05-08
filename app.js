@@ -13,8 +13,8 @@ const PORT = 4000;
 app.use(session({ secret: process.env.secret, resave: false, saveUninitialized: true }));
 
 // connection to mongodb
-var DB_URL=process.env.DB_URL;
-mongoose.connect(DB_URL, { //need to change
+//var DB_URL=process.env.DB_URL;
+mongoose.connect("mongodb+srv://user_123:back_end123@cluster0.yp7hyba.mongodb.net/?retryWrites=true&w=majority", { //need to change
     useNewUrlParser: true,
     useUnifiedTopology: true,  
 });
