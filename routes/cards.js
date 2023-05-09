@@ -14,7 +14,7 @@ router.get('/:userId/cards',cardsControl.getCards);
 router.get('/:userId/card/:cardId', cardsControl.getCard);
 
 //POST card 
-router.post('/card',upload.single('image'),cardsControl.postCard);
+router.post('/:userId/card',upload.single('image'),cardsControl.postCard);
 
 //PUT
 router.put('/card/:cardId',upload.single('image'),cardsControl.updateCard);

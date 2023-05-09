@@ -36,10 +36,12 @@ exports.getCards = (req, res, next) =>{
 exports.postCard = (req,res,next) =>{
     const {title} = req.body;
     const {path} = req.file;
+    const {userId} = req.params;
 
     const card = new Card({
         title ,
-        imageUrl: path
+        imageUrl: path,
+        user: userId
     });
     card.save().then(result =>{
         res.status(200).json({message: "card created",card: result});
