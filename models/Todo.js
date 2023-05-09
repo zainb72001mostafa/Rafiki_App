@@ -32,6 +32,10 @@ const TodoSchema = new mongoose.Schema({
         default:false,
         required: false 
         
+    },
+    user: {
+        type: String,
+        required: true
     }
 });
 

@@ -25,9 +25,7 @@ const If_Conditional_Timer = require("../CallBackFunctions");
 
 /****** get Not completed todos of user ******/
 
-
-
- router.get("/:user/todos/NotCompleted", (req, res) => {
+router.get("/:user/todo/Notcompleted", ( req, res) => {
 	Todo.find({ isDone: false, user: req.params.user})
   .then(todos => {
 		res.status(200).json(todos);
@@ -36,13 +34,13 @@ const If_Conditional_Timer = require("../CallBackFunctions");
     return res.status(200).json({ err });
   });
   
-});
- 
+ });
+
 
 
 /*********  add New Todo ******/
 
-router.post("/todos/add", (req , res) => {
+router.post("/:user/todos/add", (req , res) => {
   
  
 
@@ -56,6 +54,7 @@ router.post("/todos/add", (req , res) => {
 
 
     const newTodo = new Todo({
+    user: req.params.user,
     title: req.body.title,
     description: req.body.description ,
     Hours: req.body.Hours,
@@ -63,6 +62,7 @@ router.post("/todos/add", (req , res) => {
     Seconds: req.body.Seconds,
     timeoutObj: timerid,
     isDone: req.body.isDone
+   
   }); 
 
   // save the todo
