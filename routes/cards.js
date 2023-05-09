@@ -8,13 +8,13 @@ const router = express.Router();
 
 
 //GET  all cards of specific user    
-router.get('/:userId/cards',cardsControl.getCards);
+router.get('/:user/cards',cardsControl.getCards);
 
 //GET  get only one card
-router.get('/:userId/card/:cardId', cardsControl.getCard);
+router.get('/:user/card/:cardId', cardsControl.getCard);
 
 //POST card 
-router.post('/:userId/card',upload.single('image'),cardsControl.postCard);
+router.post('/:user/card',upload.single('image'),cardsControl.postCard);
 
 //PUT
 router.put('/card/:cardId',upload.single('image'),cardsControl.updateCard);

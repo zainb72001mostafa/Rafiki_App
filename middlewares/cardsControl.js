@@ -25,7 +25,7 @@ exports.fileFilter = function (req, file, cb) {
 
 //get all cards
 exports.getCards = (req, res, next) =>{
-    Card.find({userId: req.params.userId}).then(cards =>{
+    Card.find({user: req.params.user}).then(cards =>{
         res.status(200).json({message: "fetched cards", cards: cards});
     }).catch(err =>{
         res.status(200).json({message:" ERROR",err: err});
@@ -36,12 +36,12 @@ exports.getCards = (req, res, next) =>{
 exports.postCard = (req,res,next) =>{
     const {title} = req.body;
     const {path} = req.file;
-    const {userId} = req.params;
+    const {user} = req.params;
 
     const card = new Card({
         title ,
         imageUrl: path,
-        user: userId
+        user
     });
     card.save().then(result =>{
         res.status(200).json({message: "card created",card: result});
@@ -53,8 +53,8 @@ exports.postCard = (req,res,next) =>{
  // get one card
 exports.getCard = (req,res,next) =>{
     const {cardId} =req.params;
-    const {userId} = req.params;
-    Card.findById({userId,cardId}).then(card =>{
+    const {user} = req.params;
+    Card.find({cardId,user}).then(card =>{
         if(!card){
             console.log("card not found");
             //res.status(200).json({message:"no card found"});
