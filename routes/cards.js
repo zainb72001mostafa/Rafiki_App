@@ -14,12 +14,12 @@ router.get('/:user/cards',cardsControl.getCards);
 router.get('/:user/card/:cardId', cardsControl.getCard);
 
 //POST card 
-router.post('/:user/card',upload.single('image'),cardsControl.postCard);
+router.post('/:user/card/add',upload.single('image'),cardsControl.postCard);
 
 //PUT
-router.put('/card/:cardId',upload.single('image'),cardsControl.updateCard);
+router.put('/card/:cardId/update',upload.single('image'),cardsControl.updateCard);
 
 //DELETE
-router.delete('/card/:cardId',cardsControl.deleteCard);
+router.delete('/card/:cardId/delete',cardsControl.deleteCard);
 
 module.exports = router;
