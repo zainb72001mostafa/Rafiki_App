@@ -11,7 +11,7 @@ const cardSchema = new Schema({
         required: true
     },
     user:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     }
 },{timestamps: true});
