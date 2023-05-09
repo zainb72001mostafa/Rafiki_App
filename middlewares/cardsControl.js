@@ -54,7 +54,7 @@ exports.postCard = (req,res,next) =>{
 exports.getCard = (req,res,next) =>{
     const {cardId} =req.params;
     const {user} = req.params;
-    Card.findOne({cardId,user}).then(card =>{
+    Card.findById({cardId,user}).then(card =>{
         if(!card){
             console.log("card not found");
             //res.status(200).json({message:"no card found"});
