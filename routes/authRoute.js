@@ -7,6 +7,7 @@ require('dotenv').config();
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 var nodemailer = require("nodemailer");
+const { Error } = require("mongoose");
 
 // Register Function
 router.post("/api/auth/signup",[verifyIsRequiredFieldsInSignUp],[checkDuplicateUsernameOrEmail] ,(req , res) => {
@@ -20,10 +21,16 @@ router.post("/api/auth/signup",[verifyIsRequiredFieldsInSignUp],[checkDuplicateU
   user
   .save()
   .then(() => {
-    res.status(200).json("Registered Successfully!");
+    res.status(200).json({
+      message: "Registered Successfully!",
+      flag : true
+      }
+      );
 
   })
-  .catch((err) => res.send(err));
+  .catch(err =>{
+    res.status(200).json({message:" ERROR",err: err, flag: false});
+});
 
  });
 
@@ -32,11 +39,21 @@ router.post("/api/auth/signin", (req, res) => {
  let username = req.body.username;
  let password = req.body.password;
  if(username == "" && password == ""){
-  return res.status(200).json("Fields are required");
+  return res.status(200).json({
+      message: "Fields are required",
+      flag : false
+      }
+   );
  }else if(username == ""){
-  return res.status(200).json( "UserName is required" );
+  return res.status(200).json( {
+    message: "UserName is required",
+    flag : false
+    } );
 }else if(password == ""){
-  return res.status(200).json( "Password is required" );
+  return res.status(200).json({
+    message:  "Password is required",
+    flag : false
+    } );
 }
 else{
 
@@ -44,7 +61,10 @@ User.findOne({ username: req.body.username })
     .then( user => {
  
       if (!user) {
-        return res.status(200).json({ message: "User Not found." });
+        return res.status(200).json({
+          message:  "User Not found.",
+          flag : false
+          });
       }
       
       var passwordIsValid = bcrypt.compareSync(
@@ -54,7 +74,10 @@ User.findOne({ username: req.body.username })
 
     
   if (!passwordIsValid) {
-   return res.status(200).json({ message: "Invalid Password!" });
+   return res.status(200).json({
+    message:  "Invalid Password!",
+    flag : false
+    });
   }
  
 
@@ -67,6 +90,7 @@ User.findOne({ username: req.body.username })
 req.session.token = token;
 
   res.status(200).send({
+      flag: true,
       id: user._id,
       username: user.username,
       email: user.email,
@@ -74,7 +98,7 @@ req.session.token = token;
 
      })
 .catch(err => {
-  res.status(200).json(err);
+  res.status(200).json({message:" ERROR",err: err, flag: false});
 });
 }
 });
@@ -83,9 +107,12 @@ req.session.token = token;
 router.post("/api/auth/signout", (req, res) => {
 try {
   req.session = null;
-   res.status(200).json({ message: "You've been log out!" });
+   res.status(200).json({
+    message: "You've been log out!",
+    flag : true
+    });
 } catch (err) {
-  res.status(200).json(err);
+  res.status(200).json({message:" ERROR",err: err, flag: false});
 }
 });
 
@@ -100,12 +127,15 @@ const {email} = req.body;
 const oldUser = await User.findOne({email});
 try{
 if(!oldUser){
-return res.status(200).json( "User Not Exists!!" );
+return res.status(200).json({
+  message:  "User Not Exists!!",
+  flag : false
+  } );
 }
 
 const secret = process.env.JWT_SECRET+oldUser.password;
 const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
-expiresIn: "5m",
+expiresIn: "60m",
 });
 const link = ``+protocol+`://`+server_name+`/reset-password/${oldUser._id}/${token}`;
 
@@ -129,13 +159,16 @@ link,
 
 transporter.sendMail(mailOptions, function (error, info) {
 if (error) {
-  res.status(200).json('Error in sending email  ' + error);
+  res.status(200).json({message:'Error in sending email  ' ,  error, flag : false });
 } else {
-  console.log("Email sent: " + info.response);
+  console.log({message:"Email sent: "} + info.response);
 }
 });
 
-res.status(200).json("email has been sent successfully to client!");
+res.status(200).json({
+  message: "email has been sent successfully to client!",
+  flag : true
+  });
 }catch (error) { }
 
 });
@@ -145,7 +178,7 @@ router.get("/reset-password/:id/:token", async(req, res) => {
 const {id,token} = req.params; 
 const oldUser = await User.findOne({_id: id});
 if (!oldUser) {
-return res.status(200).json( "User Not Exists!!" );
+return res.status(200).json( { message:  "User Not Exists!!"} );
 }
 const secret = process.env.JWT_SECRET+oldUser.password;
 try{
@@ -154,7 +187,7 @@ res.render("index",{ email: verify.email, status: "Not Verified" })
 
 }catch (error) {
 console.log(error);
-res.status(200).json("Not Verified ");
+res.status(200).json({message: "Not Verified "});
 }
 
 });
@@ -166,7 +199,8 @@ const {id,token} = req.params;
 const {password} = req.body;
 const oldUser = await User.findOne({_id: id});
 if (!oldUser) {
-return  res.status(200).json( "User Not Exists!!" );
+return  res.status(200).json( { message:  "User Not Exists!!",
+});
 }
 const secret = process.env.JWT_SECRET+oldUser.password;
 try{

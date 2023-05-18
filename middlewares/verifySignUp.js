@@ -6,7 +6,7 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
     User.findOne({username: req.body.username })
        .then(user => {
           if (user) {
-           res.status(200).json({ message: "Failed! Username is already in use!" });
+           res.status(200).json({ message: "Failed! Username is already in use!", flag: false });
             return;
              }
 
@@ -14,19 +14,19 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
       User.findOne({ email: req.body.email })
          .then( user => {
            if (user) {
-            res.status(200).json({ message: "Failed! Email is already in use!" });
+            res.status(200).json({ message: "Failed! Email is already in use!", flag: false });
             return;
            }
   
         next();
       })
       .catch(err => {
-        res.status(200).json({ message: err });
+        res.status(200).json({message:" ERROR",err: err, flag: false});
         return;
       });
     })
     .catch(err => {
-      res.status(200).json({ message: err });
+      res.status(200).json({message:" ERROR",err: err, flag: false});
       return;
     });
     

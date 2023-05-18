@@ -15,10 +15,13 @@ const If_Conditional_Timer = require("../CallBackFunctions");
 
 		Todo.findOne({ _id: req.params.id, user: req.params.user })
 				.then(todo => {
-					res.json(todo);
+					res.status(200).json({
+            flag: true,
+            todo 
+          });
 				})
 				.catch(err => {
-					return res.status(200).json({ err });
+         return res.status(200).json({message:" ERROR",err: err, flag: false});
 				});
 });
 
@@ -28,10 +31,13 @@ const If_Conditional_Timer = require("../CallBackFunctions");
 router.get("/:user/todo/Notcompleted", ( req, res) => {
 	Todo.find({ isDone: false, user: req.params.user})
   .then(todos => {
-		res.status(200).json(todos);
+		res.status(200).json({
+      flag: true,
+      todos
+    });
 	})
   .catch(err => {
-    return res.status(200).json({ err });
+    return res.status(200).json({message:" ERROR",err: err, flag: false});
   });
   
  });
@@ -47,7 +53,7 @@ router.post("/:user/todos/add", (req , res) => {
   const { errors, isValid } = validateTodoInput(req.body);
 
   if( !isValid ){
-      return res.status(200).json(errors); // Bad Request Error
+      return res.status(200).json({message:" ERROR",err: errors, flag: false}); // Bad Request Error
   }
 
    let timerid = If_Conditional_Timer(req.body) ;
@@ -69,11 +75,15 @@ router.post("/:user/todos/add", (req , res) => {
   newTodo
    .save()
    .then(() => {
-     res.status(200).json("Successfully added todo!");
+     res.status(200).json({
+      message: "Successfully added todo!",
+      flag: true
+      });
    // res.redirect("/"); // redirect to home .. like Refresh
    })
-   .catch((err) => res.status(200).json(err));
-
+   .catch(err => {
+     res.status(200).json({message:" ERROR",err: err, flag: false});
+  });
 });
 
 
@@ -85,7 +95,7 @@ router.post("/:user/todos/add", (req , res) => {
 
      // Check if there is any updated data in req.body
     if (!isValid) {
-      return res.status(200).json(errors);  // Bad Request Error
+      return res.status(200).json({message:" ERROR",err: errors, flag: false});  // Bad Request Error
     }
     
     let Hours = !isEmpty(req.body.Hours) ? req.body.Hours : 0 ;
@@ -110,11 +120,14 @@ router.post("/:user/todos/add", (req , res) => {
     )
     
     .then(() => {
-      res.status(200).json("Updated Successfully!");
+      res.status(200).json({
+      message:  "Updated Successfully!",
+      flag: true
+      });
      })
      
      .catch(err => {
-    res.status(200).json({ err });
+      res.status(200).json({message:" ERROR",err: err, flag: false});
     });
 
   });
@@ -125,11 +138,14 @@ router.post("/:user/todos/add", (req , res) => {
   router.delete("/todos/delete/:id", (req, res) => {
     Todo.deleteOne({ _id: req.params.id })
         .then(() => {
-           res.status(200).json("Deleted Todo Successfully!");
+           res.status(200).json({
+           message:  "Deleted Todo Successfully!",
+           flag: true
+            });
           // res.redirect("/");  // redirect to home .. like Refresh
           })
         .catch(err => {
-         res.status(200).json({ err });
+          res.status(200).json({message:" ERROR",err: err, flag: false});
          });
   });
 
@@ -143,11 +159,14 @@ router.post("/:user/todos/add", (req , res) => {
         isDone: true
       })
       .then(() => {
-       res.status(200).json("Task is done!");
+       res.status(200).json({
+        message: "Task is done!",
+        flag: true
+        });
        })
   
      .catch(err => {
-      res.status(200).json({ err });
+      res.status(200).json({message:" ERROR",err: err, flag: false});
       });
 
 });
@@ -157,10 +176,13 @@ router.post("/:user/todos/add", (req , res) => {
  router.get("/:user/todo/completed", ( req, res) => {
 	Todo.find({ isDone: true, user: req.params.user})
   .then(todos => {
-		res.status(200).json(todos);
+		res.status(200).json({
+      flag: true,
+      todos
+    });
 	})
   .catch(err => {
-    return res.status(200).json({ err });
+    res.status(200).json({message:" ERROR",err: err, flag: false});
   });
   
  });

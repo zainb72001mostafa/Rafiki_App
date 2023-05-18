@@ -5,13 +5,19 @@ const User = require("../models/userModel");
 //get logged in user data
 router.get("/api/user", [verifyToken], async (req, res) => {
     const user = await User.findById(req.userId);
-    return res.status(200).json(user);
+    return res.status(200).json({
+        flag: true,
+        user
+    });
 });
 
 //get all users
 router.get("/api/users", [verifyToken], async (req, res) => {
     const users = await User.find();
-    return res.status(200).json(users);
+    return res.status(200).json({
+        flag: true,    
+        users
+    });
 });
 
 //get single user data (user profile)
@@ -20,11 +26,14 @@ router.get("/api/user/:userID", [verifyToken], async (req, res) => {
         const user = await User.findById(req.params.userID);
         
         if(!user){
-            return res.status(404).json({"message": `User with ID : ${req.params.userID} is not found !`})
+            return res.status(200).json({message : `User with ID : ${req.params.userID} is not found !`, flag: false})
         }
-        return res.status(200).json(user);
+        return res.status(200).json({
+           flag: true,
+            user
+        });
     } catch(err){
-        return res.status(200).json({"message" : err.message});
+        return res.status(200).json({message : err.message, flag: false});
     }
 });
 
@@ -36,10 +45,14 @@ router.put("/api/user", [verifyToken], async (req, res) => {
             email : req.body.email 
         }, {new: true, runValidators: true});
 
-        return res.json(user);
+        return res.status(200).json({
+           flag: true,
+            user
+        });
     } catch(err){
-        return res.json({
-            message: err.message
+        return res.status(200).json({
+            message: err.message,
+            flag: false
         });
     }
 })

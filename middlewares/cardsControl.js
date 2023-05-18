@@ -26,9 +26,9 @@ exports.fileFilter = function (req, file, cb) {
 //get all cards
 exports.getCards = (req, res, next) =>{
     Card.find({user: req.params.user}).then(cards =>{
-        res.status(200).json({message: "fetched cards", cards: cards});
+        res.status(200).json({flag: true, message: "fetched cards", cards: cards});
     }).catch(err =>{
-        res.status(200).json({message:" ERROR",err: err});
+        res.status(200).json({flag: false, message:" ERROR",err: err});
     });
 };
 
@@ -44,9 +44,9 @@ exports.postCard = (req,res,next) =>{
         user
     });
     card.save().then(result =>{
-        res.status(200).json({message: "card created",card: result});
+        res.status(200).json({flag: true, message: "card created",card: result});
     }).catch(err => {
-        res.status(200).json({message:" ERROR",err: err});
+        res.status(200).json({flag: false, message:" ERROR",err: err});
     });
 };
 
@@ -59,9 +59,9 @@ exports.getCard = (req,res,next) =>{
             console.log("card not found");
             //res.status(200).json({message:"no card found"});
         }
-        res.status(200).json({message: "one card is fetched", card: card});
+        res.status(200).json({flag: true, message: "one card is fetched", card: card});
     }).catch(err => {
-        res.status(200).json({message:" ERROR",err: err});
+        res.status(200).json({flag: false, message:" ERROR",err: err});
     });
 };
 
@@ -93,9 +93,9 @@ exports.updateCard = (req, res, next) =>{
         card.imageUrl = path;
         return card.save();
     }).then(result =>{
-        res.status(200).json({message: "file updated",card: result});
+        res.status(200).json({flag: true, message: "file updated",card: result});
     }).catch(err =>{
-        res.status(200).json({message:" ERROR",err: err});
+        res.status(200).json({flag: false, message:" ERROR",err: err});
     });
 
 } 
@@ -111,8 +111,8 @@ exports.deleteCard = (req, res, next) =>{
         return Card.findByIdAndRemove(cardId);
     }).then(result =>{
         console.log(result);
-        res.status(200).json({message: "card deleted successflly "});
+        res.status(200).json({flag: true, message: "card deleted successflly "});
     }).catch(err => {
-        res.status(200).json({message:" ERROR",err: err});
+        res.status(200).json({flag: false, message:" ERROR",err: err});
     });
 };
