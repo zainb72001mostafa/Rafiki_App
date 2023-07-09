@@ -156,12 +156,12 @@ router.post("/forget-password", async(req, res) => {
   };  
     
   transporter.sendMail(mailOptions, function (error, info) {  
-  if (error) {  
-     res.status(200).json('Error in sending email  ' + error);  
-  } else {  
-    console.log("Email sent: " + info.response);  
-  }  
-  });  
+    if (error) {  
+      return  res.status(200).json('Error in sending email  ' + error);  
+     } else {  
+       console.log("Email sent: " + info.response);  
+     }  
+     });
     
    res.status(200).json("email has been sent successfully to client!");  
   }catch (error) { }  
