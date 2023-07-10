@@ -129,15 +129,18 @@ link,
 
 transporter.sendMail(mailOptions, function (error, info) {
 if (error) {
-  res.status(200).json('Error in sending email  ' + error);
+  return res.status(200).json('Error in sending email  ' + error);
 } else {
   console.log("Email sent: " + info.response);
- 
+ return  res.status(200).json("email has been sent successfully to client!");
 }
 });
-res.status(200).json("email has been sent successfully to client!");
 
-}catch (error) { }
+
+}catch (error) {
+console.log(error);
+res.status(200).json(error);
+}
 
 });
 
