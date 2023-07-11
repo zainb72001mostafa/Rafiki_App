@@ -121,57 +121,66 @@ try {
 
 router.post("/forget-password", async(req, res) => {
 
-var server_name = req.headers.host; // Get server name from request
-var protocol = req.protocol; // Get protocol (http or https)
-const {email} = req.body;
-const oldUser = await User.findOne({email});
-try{
-if(!oldUser){
-return res.status(200).json({
-  message:  "User Not Exists!!",
-  flag : false
-  } );
-}
-
-const secret = process.env.JWT_SECRET+oldUser.password;
-const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
-expiresIn: "60m",
-});
-const link = ``+protocol+`://`+server_name+`/reset-password/${oldUser._id}/${token}`;
-
-var transporter = nodemailer.createTransport({
-service: "gmail",
-auth: {
-  user: process.env.auth_email ,
-  pass: process.env.auth_password,
-},
-});
-
-var mailOptions = {
-from: process.env.auth_email,
-to: email,
-secure: true,
-subject: "Password Reset",
-html:
-'<p>Please click on the following link to reset your password:</p>' +
-link,
-};
-
-transporter.sendMail(mailOptions, function (error, info) {
-if (error) {
-  res.status(200).json({message:'Error in sending email  ' ,  error, flag : false });
-} else {
-  console.log({message:"Email sent: "} + info.response);
-}
-});
-
-res.status(200).json({
-  message: "email has been sent successfully to client!",
-  flag : true
+  var server_name = req.headers.host; // Get server name from request
+  var protocol = req.protocol; // Get protocol (http or https)
+  const {email} = req.body;
+  const oldUser = await User.findOne({email});
+  try{
+  if(!oldUser){
+  return res.status(200).json( "User Not Exists!!" );
+  }
+  
+  const secret = process.env.JWT_SECRET+oldUser.password;
+  const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+  expiresIn: "30m",
   });
-}catch (error) { }
-
-});
+  const link = ``+protocol+`://`+server_name+`/reset-password/${oldUser._id}/${token}`;
+  
+  var transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port : 465,
+  secure: true, // true for 465, flase for other ports
+  logger: true,
+  debug: true,
+  secureConnection: false,
+  auth: {
+    user: process.env.auth_email ,
+    pass: process.env.auth_password,
+  },
+  /*
+  tls: {
+    rejectUnAuthorized: true
+  }
+  */
+  });
+  
+  var mailOptions = {
+  from: process.env.auth_email,
+  to: email,
+  secure: true,
+  subject: "Password Reset",
+  html:
+  '<p>Please click on the following link to reset your password:</p>' +
+  link,
+  };
+  
+  transporter.sendMail(mailOptions, function (error, info) {
+  if (error) {
+    return res.status(200).json('Error in sending email  ' + error);
+  } else {
+    console.log("Email sent: " + info.response);
+   return  res.status(200).json({message:"email has been sent successfully to client!",flag: true});
+  }
+  });
+  
+  
+  }catch (error) {
+  console.log(error);
+  res.status(200).json(error);
+  }
+  
+  });
 
 // get request for reser-password
 router.get("/reset-password/:id/:token", async(req, res) => {
