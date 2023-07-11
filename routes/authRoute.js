@@ -111,7 +111,8 @@ const link = ``+protocol+`://`+server_name+`/reset-password/${oldUser._id}/${tok
 
 var transporter = nodemailer.createTransport({
 service: "gmail",
-port : 465,
+host: "smtp.gmail.com",
+port : 587,
 secure: true, // true for 465, flase for other ports
 logger: true,
 debug: true,
